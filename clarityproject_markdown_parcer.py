@@ -110,17 +110,18 @@ def get_directors(request_data_list):
                     all_directors = soup.find_all('td')[i+1].find_all('div')
                     
                     for director in all_directors:
-                       raw_director_data = director.get_text().replace("(Згідно з Статутом)","")
+                       raw_director_data = director.get_text().replace("(Згідно з Статутом)","").replace("(Відповідно до Статуту)","")
                        raw_director_data = raw_director_data.strip().split("\n-\n\n")
                        if (len(raw_director_data)>=2):
-                           
                            formatted_director = raw_director_data[0]+" ("+raw_director_data[1]+")"
-                           directors_list.append(formatted_director)
-                break
+                           formatted_director = formatted_director.replace("\n\n","")
+                           if formatted_director not in directors_list:
+                               
+                               directors_list.append(formatted_director)
                       
             directors_column.append(directors_list)     
         except (IndexError, AttributeError, KeyError, TypeError):
-            directors_column.append([])
+            directors_column.append("невідомо")
     
     print('Отримані директори компаній.')
     return directors_column
