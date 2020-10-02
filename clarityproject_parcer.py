@@ -68,6 +68,6 @@ if __name__ == '__main__':
         directors_column = clarityproject_markdown_parcer.get_directors(request_data_list)
     # add_columns_to_dataframe(df, registration_column, beneficiary_column, founder_column,
     #                         capital_column, vat_column)
-    add_columns_to_dataframe(df, registration_column, founders_column, capital_column, kved_column,
+    add_columns_to_dataframe(df, registration_column, founders_column,None, capital_column,None, kved_column,
                              status_column, contacts_column, directors_column)
     print('Файл з результатами записаний. Робота успішно завершена.')
