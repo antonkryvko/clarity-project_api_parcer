@@ -32,7 +32,7 @@ def get_registration_dates(request_data_list):
         try:
             soup = BeautifulSoup(request_data, 'lxml')
             registration_column.append(re.sub('\n', '',soup.find(string=re.compile(REGISTRATION_REGEXP))))
-        except (KeyError, TypeError):
+        except (AttributeError, KeyError, TypeError):
             registration_column.append('невідомо')
     print('Отримані дати реєстрації компаній.')
     return registration_column
@@ -48,7 +48,7 @@ def get_founders(request_data_list):
                 if (founder_trimmed not in founders_list) & (founder_trimmed is not None):
             	     founders_list.append(founder_trimmed)
             founders_column.append(founders_list)
-        except (KeyError, TypeError):
+        except (IndexError, AttributeError, KeyError, TypeError):
             founders_column.append('невідомо')
     print('Отримані засновники компаній.')
     return founders_column
@@ -67,7 +67,7 @@ def get_capitals(request_data_list):
             capital_trimmed = capital.replace(" ","")
             capital_column.append(capital_trimmed)  
             
-        except (KeyError, TypeError):
+        except (IndexError, AttributeError, KeyError, TypeError):
             capital_column.append('невідомо')
 
     print('Отримані статутні капітали компаній.')
@@ -79,17 +79,19 @@ def get_main_kved(request_data_list):
     for request_data in request_data_list:
         try:
             soup = BeautifulSoup(request_data, "html.parser")
-            
+            main_kved = None
             for i,td in enumerate(soup.find_all('td')):
                 td_text = td.get_text()
                 
                 if KVED_TD in td_text:
                     all_kveds = soup.find_all('td')[i+1].find_all('div')
                     main_kved = all_kveds[0].get_text().strip()
+            if main_kved is not None:
+                kved_column.append(main_kved)
+            else:
+                kved_column.append('невідомо')  
             
-            kved_column.append(main_kved)  
-            
-        except (KeyError, TypeError):
+        except (IndexError, AttributeError, KeyError, TypeError):
             kved_column.append('невідомо')
     print('Отримані основні кведи компаній.')
     return kved_column
@@ -99,24 +101,27 @@ def get_directors(request_data_list):
     directors_column = list()
     for request_data in request_data_list:
         try:
-            soup = BeautifulSoup(request_data, "html.parser")           
+            soup = BeautifulSoup(request_data, "html.parser")  
+            directors_list = list()       
             for i,td in enumerate(soup.find_all('td')):
-                td_text = td.get_text()                
+                td_text = td.get_text() 
+                                
                 if DIRECTORS_TD in td_text:
                     all_directors = soup.find_all('td')[i+1].find_all('div')
-                    directors_list = list()
+                    
                     for director in all_directors:
                        raw_director_data = director.get_text().replace("(Згідно з Статутом)","")
                        raw_director_data = raw_director_data.strip().split("\n-\n\n")
                        if (len(raw_director_data)>=2):
                            
                            formatted_director = raw_director_data[0]+" ("+raw_director_data[1]+")"
-                       
-                       directors_list.append(formatted_director)
+                           directors_list.append(formatted_director)
+                break
+                      
             directors_column.append(directors_list)     
-        except (KeyError, TypeError):
-            directors_column.append('невідомо')
-    print(directors_column)
+        except (IndexError, AttributeError, KeyError, TypeError):
+            directors_column.append([])
+    
     print('Отримані директори компаній.')
     return directors_column
 
@@ -128,7 +133,7 @@ def get_status(request_data_list):
             status = soup.select(STATUS_CSS_SELECTOR)
             status_trimmed = status[0].get_text().strip().replace("\n"," ")
             status_column.append(status_trimmed)
-        except (KeyError, TypeError):
+        except (IndexError, AttributeError, KeyError, TypeError):
             status_column.append('невідомо')
     print('Отримані стани компаній.')
     return status_column
@@ -150,7 +155,7 @@ def get_contacts(request_data_list):
                 decoded_data = decoded_data[contact_end_index:] 
 
             contacts_column.append(contacts_list)
-        except (KeyError, TypeError):
+        except (IndexError, AttributeError, KeyError, TypeError):
             contacts_column.append('невідомо')
     print('Отримані контакти компаній.')
     return contacts_column
