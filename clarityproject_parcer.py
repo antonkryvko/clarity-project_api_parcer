@@ -28,12 +28,17 @@ def get_codes_from_dataframe(df):
 
 
 def add_columns_to_dataframe(df, registration_column=None, founder_column=None, beneficiary_column=None,
-                             capital_column=None, vat_column=None):
+                             capital_column=None, vat_column=None, main_kved_column = None, status_column = None, 
+                             contacts_column=None, directors_column=None):
     df[REGISTRATION_COLUMN_HEADER] = registration_column
     df[FOUNDER_COLUMN_HEADER] = founder_column
     df[BENEFICIARY_COLUMN_HEADER] = beneficiary_column
     df[CAPITAL_COLUMN_HEADER] = capital_column
     df[VAT_COLUMN_HEADER] = vat_column
+    df[MAIN_KVED_COLUMN_HEADER] = main_kved_column
+    df[STATUS_COLUMN_HEADER] = status_column
+    df[CONTACTS_COLUMN_HEADER] = contacts_column
+    df[DIRECTORS_COLUMN_HEADER] = directors_column
     df.to_csv(OUTPUT_CSV, index=False)
 
 
@@ -55,7 +60,14 @@ if __name__ == '__main__':
         print('Немає доступу до API, переходжу у режим скрепінгу.')
         request_data_list = clarityproject_markdown_parcer.get_clarityproject_data(codes_list)
         registration_column = clarityproject_markdown_parcer.get_registration_dates(request_data_list)
+        founders_column = clarityproject_markdown_parcer.get_founders(request_data_list)
+        capital_column = clarityproject_markdown_parcer.get_capitals(request_data_list)
+        kved_column = clarityproject_markdown_parcer.get_main_kved(request_data_list)
+        status_column = clarityproject_markdown_parcer.get_status(request_data_list)
+        contacts_column = clarityproject_markdown_parcer.get_contacts(request_data_list)
+        directors_column = clarityproject_markdown_parcer.get_directors(request_data_list)
     # add_columns_to_dataframe(df, registration_column, beneficiary_column, founder_column,
     #                         capital_column, vat_column)
-    add_columns_to_dataframe(df, registration_column)
+    add_columns_to_dataframe(df, registration_column, founders_column, capital_column, kved_column,
+                             status_column, contacts_column, directors_column)
     print('Файл з результатами записаний. Робота успішно завершена.')
