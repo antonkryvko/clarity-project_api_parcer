@@ -27,11 +27,11 @@ def get_codes_from_dataframe(df):
     return codes_list
 
 
-def add_columns_to_dataframe(df, registration_column=None, founder_column=None, beneficiary_column=None,
-                             capital_column=None, vat_column=None, main_kved_column = None, status_column = None, 
+def add_columns_to_dataframe(df, registration_column=None, founders_column=None, beneficiary_column=None,
+                             capital_column=None, vat_column=None, main_kved_column=None, status_column=None,
                              contacts_column=None, directors_column=None):
     df[REGISTRATION_COLUMN_HEADER] = registration_column
-    df[FOUNDER_COLUMN_HEADER] = founder_column
+    df[FOUNDERS_COLUMN_HEADER] = founders_column
     df[BENEFICIARY_COLUMN_HEADER] = beneficiary_column
     df[CAPITAL_COLUMN_HEADER] = capital_column
     df[VAT_COLUMN_HEADER] = vat_column
@@ -66,8 +66,7 @@ if __name__ == '__main__':
         status_column = clarityproject_markdown_parcer.get_status(request_data_list)
         contacts_column = clarityproject_markdown_parcer.get_contacts(request_data_list)
         directors_column = clarityproject_markdown_parcer.get_directors(request_data_list)
-    # add_columns_to_dataframe(df, registration_column, beneficiary_column, founder_column,
-    #                         capital_column, vat_column)
-    add_columns_to_dataframe(df, registration_column, founders_column,None, capital_column,None, kved_column,
-                             status_column, contacts_column, directors_column)
+    add_columns_to_dataframe(df, registration_column=registration_column, founders_column=founders_column,
+                             capital_column=capital_column, main_kved_column=kved_column, status_column=status_column,
+                             contacts_column=contacts_column, directors_column=directors_column)
     print('Файл з результатами записаний. Робота успішно завершена.')
